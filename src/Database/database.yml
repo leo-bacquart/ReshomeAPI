@@ -1,3 +1,4 @@
+# Do not commit credentials
 dbname: dbname
 host: localhost
 username: user
