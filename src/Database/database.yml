@@ -1,4 +1,4 @@
-dbname: reshome
-host: 127.0.0.1
-username: root
-password: eh
+dbname: dbname
+host: localhost
+username: user
+password: word
