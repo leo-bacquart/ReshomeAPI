@@ -1,10 +1,11 @@
 <?php
 
-namespace Hetic\ReshomeH\Model\Manager;
+namespace Hetic\ReshomeApi\Model\Manager;
 
-use Hetic\ReshomeH\Model\Class;
+use Hetic\ReshomeApi\Model\Bases\BaseManager;
+use Hetic\ReshomeApi\Model\Class;
 
-class ReviewManager extends \Hetic\ReshomeH\Model\Bases\BaseManager
+class ReviewManager extends BaseManager
 {
     public function getReviewUser(int $user_id) {
         $query = 'SELECT * FROM User WHERE user_id = :id';

@@ -1,15 +1,15 @@
 <?php
 
-namespace Hetic\ReshomeH\Model\Manager;
+namespace Hetic\ReshomeApi\Model\Manager;
 
-use Hetic\ReshomeH\Model\Bases\BaseManager;
-use Hetic\ReshomeH\Model\Class;
+use Hetic\ReshomeApi\Model\Bases\BaseManager;
+use Hetic\ReshomeApi\Model\Class;
 
 class AnnounceManager extends BaseManager
 {
-    public function addAnnounce(Announce $announce)
+    public function addAnnounce(Class\Announce $announce): void
     {
-        $query = $this->db->prepare("INSERT INTO Announce (title, description, neighborhood, arrondissement, bedroom_number, capacity, `type`, area) VALUES (:title, :description, :neighborhood, :arrondissement, :bedromm_number, :capacity, :`type`, :area, :price)");
+        $query = $this->db->prepare("INSERT INTO Announce (title, description, neighborhood, arrondissement, bedroom_number, capacity, `type`, area, price) VALUES (:title, :description, :neighborhood, :arrondissement, :bedromm_number, :capacity, :`type`, :area, :price)");
 
         $query->bindValue(":title", $announce->getTitle());
         $query->bindValue(":description", $announce->getDescription());
@@ -66,7 +66,7 @@ class AnnounceManager extends BaseManager
 
     public function deleteAnnounceByID(int $id) :bool
     {
-        $query = $this->db->prepare("DELETE * FROM Announce WHERE id = :id");
+        $query = $this->db->prepare("DELETE FROM Announce WHERE announce_id = :id");
         $query->bindValue(":id", $id);
         return $query->execute();
     }

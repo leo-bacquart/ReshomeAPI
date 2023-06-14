@@ -1,12 +1,12 @@
 <?php
 
-namespace Hetic\ReshomeH\Model\Class;
-use Hetic\ReshomeH\model\Bases\BaseClass;
+namespace Hetic\ReshomeApi\Model\Class;
+use Hetic\ReshomeApi\Model\Bases\BaseClass;
 
 class Feature extends BaseClass
 {
-    private $content;
-    private $feature_id;
+    private string $content;
+    private int $feature_id;
 
     public function getContent()
     {

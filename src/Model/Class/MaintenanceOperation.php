@@ -1,7 +1,7 @@
 <?php
 
-namespace Hetic\ReshomeH\Model\Class;
-use Hetic\ReshomeH\model\Bases\BaseClass;
+namespace Hetic\ReshomeApi\Model\Class;
+use Hetic\ReshomeApi\Model\Bases\BaseClass;
 
 class MaintenanceOperation extends BaseClass
 {
@@ -14,7 +14,7 @@ class MaintenanceOperation extends BaseClass
         return $this->announce_id;
     }
 
-    public function setAnnounceId($announce_id)
+    public function setAnnounceId($announce_id): void
     {
         $this->announce_id = $announce_id;
     }

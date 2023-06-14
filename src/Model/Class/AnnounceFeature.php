@@ -1,29 +1,29 @@
 <?php
 
-namespace Hetic\ReshomeH\Model\Class;
-use Hetic\ReshomeH\model\Bases\BaseClass;
+namespace Hetic\ReshomeApi\Model\Class;
+use Hetic\ReshomeApi\Model\Bases\BaseClass;
 
 class AnnounceFeature extends BaseClass
 {
-    private $announce_id;
-    private $feature_id;
+    private int $announce_id;
+    private int $feature_id;
 
-    public function getAnnounceId()
+    public function getAnnounceId(): int
     {
         return $this->announce_id;
     }
 
-    public function setAnnounceId($announce_id)
+    public function setAnnounceId($announce_id): void
     {
         $this->announce_id = $announce_id;
     }
 
-    public function getFeatureId()
+    public function getFeatureId(): int
     {
         return $this->feature_id;
     }
 
-    public function setFeatureId($feature_id)
+    public function setFeatureId($feature_id): void
     {
         $this->feature_id = $feature_id;
     }

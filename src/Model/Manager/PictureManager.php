@@ -1,13 +1,13 @@
 <?php
 
-namespace Hetic\ReshomeH\Model\Manager;
+namespace Hetic\ReshomeApi\Model\Manager;
 
-use Hetic\ReshomeH\Model\Bases\BaseManager;
-use Hetic\ReshomeH\Model\Class\Picture;
+use Hetic\ReshomeApi\Model\Bases\BaseManager;
+use Hetic\ReshomeApi\Model\Class;
 
 class PictureManager extends BaseManager
 {
-    public function getAnnouncePicturesById(int $announce_id) : Picture
+    public function getAnnouncePicturesById(int $announce_id) : array
     {
         $query = $this->db->prepare("SELECT * FROM Picture WHERE announce_id =:announceId");
         $query->bindValue(":announceId", $announce_id);
@@ -16,27 +16,27 @@ class PictureManager extends BaseManager
         return $query->fetchAll();
     }
 
-    public function addPicture(Picture $picture) : bool
+    public function addPicture(Class\Picture $picture) : bool
     {
-        $query = $this->db->prepare("INSERT INTO Picture (announce_id,picture_path,) VALUES (:announceId, :picturePath)");
+        $query = $this->db->prepare("INSERT INTO Picture (announce_id,picture_path) VALUES (:announceId, :picturePath)");
         $query->bindValue(":announceId", $picture->getAnnounceId());
         $query->bindValue(":picturePath", $picture->getPicturePath());
 
         return $query->execute();
     }
 
-    public function updatePicturePath(Picture $picture) : bool
+    public function updatePicturePath(Class\Picture $picture) : bool
     {
-        $query = $this->db->prepare("UPDATE Picture SET picture_path = :picturePath WHERE id = :pictureId");
+        $query = $this->db->prepare("UPDATE Picture SET picture_path = :picturePath WHERE picture_id = :pictureId");
         $query->bindValue(":pictureId", $picture->getPictureId());
         $query->bindValue(":picturePath", $picture->getPicturePath());
 
         return $query->execute();
     }
 
-    public function deletePicture(Picture $picture) : bool
+    public function deletePicture(Class\Picture $picture) : bool
     {
-        $query = $this->db->prepare("DELETE * FROM Picture WHERE id = :pictureId");
+        $query = $this->db->prepare("DELETE FROM Picture WHERE picture_id = :pictureId");
         $query->bindValue(":pictureId", $picture->getPictureId());
 
         return $query->execute();

@@ -1,9 +1,9 @@
 <?php
 
-namespace Hetic\ReshomeH\Model\Manager;
+namespace Hetic\ReshomeApi\Model\Manager;
 
-use Hetic\ReshomeH\Model\Bases\BaseManager;
-use Hetic\ReshomeH\Model\Manager\AbstractManager;
+use Hetic\ReshomeApi\Model\Bases\BaseManager;
+use Hetic\ReshomeApi\Model\Class;
 
 class ReservationManager extends BaseManager
 {

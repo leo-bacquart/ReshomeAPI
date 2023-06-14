@@ -1,13 +1,14 @@
 <?php
 
-namespace Hetic\ReshomeH\Model\Bases;
-use Hetic\ReshomeH\Factories\PDOFactory;
+namespace Hetic\ReshomeApi\Model\Bases;
+
+use Hetic\ReshomeApi\Database\PDOFactory;
 
 abstract class BaseManager
 {
     protected \PDO $db;
     public function __construct()
     {
-        $this->db = (new \Hetic\ReshomeH\Factories\PDOFactory)->getConnection();
+        $this->db = (new PDOFactory())->getConnection();
     }
 }

@@ -1,8 +1,9 @@
 <?php
 
-namespace Hetic\ReshomeH\Model\Class;
+namespace Hetic\ReshomeApi\Model\Class;
+use Hetic\ReshomeApi\Model\Bases\BaseClass;
 
-class Picture extends \Hetic\ReshomeH\Model\Bases\BaseClass
+class Picture extends BaseClass
 {
     private int $picture_id;
     private int $announce_id;
