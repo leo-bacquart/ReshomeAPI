@@ -32,7 +32,7 @@ class PDOFactory
     private static function getMysqlConnection(): \PDO
     {
         try {
-            $db = new \PDO(self::$dbname, self::$host, self::$username, self::$password);
+            $db = new \PDO(self::$dsn, self::$username, self::$password);
             $db->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
         } catch (\PDOException $exception) {
             ob_start();
