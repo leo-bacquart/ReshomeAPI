@@ -8,7 +8,7 @@ class PDOFactory
     private static string $password;
     public function __construct()
     {
-        $configFilePath = dirname(__DIR__, 2) . '/config/database.yml';
+        $configFilePath = 'database.yml';
         $config = $this->loadConfig($configFilePath);
 
         $this::$dsn = 'mysql:dbname=' . $config['dbname'] . ';host=' . $config['host'];
