@@ -3,7 +3,7 @@
 namespace Hetic\ReshomeApi\Model\Class;
 use Hetic\ReshomeApi\Model\Bases\BaseClass;
 
-class Announce extends BaseClass
+class Announce extends BaseClass implements \JsonSerializable
 {
     private string $title;
     private string $description;
@@ -137,5 +137,10 @@ class Announce extends BaseClass
     public function setPictures(array $pictures): void
     {
         $this->pictures = $pictures;
+    }
+
+    public function jsonSerialize(): mixed
+    {
+        return (object) get_object_vars($this);
     }
 }

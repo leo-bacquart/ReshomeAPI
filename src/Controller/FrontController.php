@@ -13,45 +13,29 @@ class FrontController extends BaseController
         parent::__construct();
     }
 
-    public function executeIndex() : mixed
+    public function getAnnounces() : void
     {
         $manager = new Model\Manager\AnnounceManager();
         $announces = $manager->getAllAnnounces();
         $title = 'Home';
+        $data = [];
 
         foreach ($announces as $announce) {
-            $pictureArray = $manager->getAnnouncePictures($announce->getAnnounceId());
-            $announce->setPictures($pictureArray);
+            $data[] = $announce->jsonSerialize();
         }
 
-        $template = $this->templateDir . 'skeleton.php';
-        $view = $this->viewDir . 'announceBox.php';
-
-        ob_start();
-        require $view;
-        $content = ob_get_clean();
-        return require $template;
+        header('Content-Type: application/json');
+        echo json_encode($data);
     }
 
-    public function executeDetail($id) : mixed
+    public function getDetail($id) : void
     {
         $manager = new Model\Manager\AnnounceManager();
-        $announce = $manager->getAnnounceById($id);
-        $reviews = $manager->getAnnounceReviews($id);
-        $rateAvg = Utils::getAverageFromObject($reviews, 'rate');
-        $pictureArray = $manager->getAnnouncePictures($announce->getAnnounceId());
-        $announce->setPictures($pictureArray);
 
+        $data = $manager->getAnnounceById($id)->jsonSerialize();
 
-
-
-        $template = $this->templateDir . 'skeleton.php';
-        $view = $this->viewDir . 'announceDetails.php';
-
-        ob_start();
-        require $view;
-        $content = ob_get_clean();
-        return require $template;
+        header('Content-Type: application/json');
+        echo json_encode($data);
     }
 
 
