@@ -7,7 +7,7 @@ Set in ``docker-compose.yml`` :
     ports:
       - "your_value"
 ```
-Set in ``src/Database/config.yml``
+Set in ``src/Database/database.yml``
 ```yaml
 database:
   address: database_address
