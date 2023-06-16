@@ -1,6 +1,6 @@
 <?php
 
-namespace Hetic\ReshomeApi\Model\Entity;
+namespace Hetic\ReshomeApi\Model\Class;
 use Hetic\ReshomeApi\Model\Bases\BaseClass;
 
 class MaintenanceOperation extends BaseClass
