@@ -1,3 +1,4 @@
 .idea
 vendor
 src/Database/*.yml
+Dockerfile.env

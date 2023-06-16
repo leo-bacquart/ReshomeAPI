@@ -7,6 +7,8 @@ services:
       - .:/var/www
     environment:
       - "APP_ENV=local"
+    env_file:
+      - dockerfile.env
 
   nginx:
     image: nginx:latest
