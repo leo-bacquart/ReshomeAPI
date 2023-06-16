@@ -13,13 +13,11 @@ class FrontController extends BaseController
         parent::__construct();
     }
 
-    public function getAnnounces() : void
+    public function getAnnounces($number) : void
     {
         $manager = new Model\Manager\AnnounceManager();
-        $announces = $manager->getAllAnnounces();
+        $announces = $manager->getAnnouncePage($number);
         $title = 'Home';
-        $data = [];
-
         foreach ($announces as $announce) {
             $data[] = $announce->jsonSerialize();
         }

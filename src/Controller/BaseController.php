@@ -18,4 +18,9 @@ abstract class BaseController
         $this->templateDir = $this->viewDir . '/Template/';
         $this->imagesDir = dirname(__DIR__, 2) . '/public/Images/';
     }
+
+    protected function getConnection(int $user_id, string $given_password)
+    {
+
+    }
 }

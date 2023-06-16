@@ -10,10 +10,12 @@ $router->register('GET', '/api/test', function() {
 
 $router->register('GET', '/api/get/announces', function () {
     $controller = new \Hetic\ReshomeApi\Controller\FrontController();
-    $controller->getAnnounces();
+    isset($_GET['page']) ? $page = intval($_GET['page']) : $page = 1;
+    $controller->getAnnounces($page);
+
 });
 
-$router->register('GET', '/api/get/announce/', function () {
+$router->register('GET', '/api/get/announce', function () {
     if (isset($_GET['id'])) {
         $controller = new \Hetic\ReshomeApi\Controller\FrontController();
         $controller->getDetail($_GET['id']);
