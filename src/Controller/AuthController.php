@@ -12,13 +12,11 @@ class AuthController extends BaseController
 {
     protected User $user;
     private string $secret;
-    private string $issuer;
 
     public function __construct()
     {
         parent::__construct();
         $this->secret = getenv('secret_key');
-        $this->issuer = getenv('issuer');
     }
 
     private function generateJwt($user) : string
@@ -28,7 +26,7 @@ class AuthController extends BaseController
 
         $token = array(
             'iat' => $issuedAt->getTimestamp(),
-            'iss' => $this->issuer,
+            'iss' => 'http://localhost:8080',
             'nbf' => $issuedAt->getTimestamp(),
             'exp' => $expireAt,
             'data' => $user->getUserId()
@@ -60,7 +58,6 @@ class AuthController extends BaseController
         $user = $manager->verifyCredentials($username, $password);
         if ($user) {
             $jwt = $this->generateJwt($user);
-            var_dump($jwt);
             http_response_code(200);
             header('Content-Type: application/json');
             echo json_encode(['token' => $jwt]);

@@ -37,7 +37,7 @@ class UserManager extends BaseManager
         $stmt = $this->db->prepare($query);
         $stmt->setFetchMode(\PDO::FETCH_CLASS|\PDO::FETCH_PROPS_LATE, User::class);
         $stmt->execute([
-            'email' => htmlspecialchars($id)
+            'id' => htmlspecialchars($id)
         ]);
         return $stmt->fetch();
     }
