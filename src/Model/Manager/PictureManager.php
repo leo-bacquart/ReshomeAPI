@@ -3,7 +3,7 @@
 namespace Hetic\ReshomeApi\Model\Manager;
 
 use Hetic\ReshomeApi\Model\Bases\BaseManager;
-use Hetic\ReshomeApi\Model\Class;
+use Hetic\ReshomeApi\Model\Entity;
 
 class PictureManager extends BaseManager
 {
@@ -16,7 +16,7 @@ class PictureManager extends BaseManager
         return $query->fetchAll();
     }
 
-    public function addPicture(Class\Picture $picture) : bool
+    public function addPicture(Entity\Picture $picture) : bool
     {
         $query = $this->db->prepare("INSERT INTO Picture (announce_id,picture_path) VALUES (:announceId, :picturePath)");
         $query->bindValue(":announceId", $picture->getAnnounceId());
@@ -25,7 +25,7 @@ class PictureManager extends BaseManager
         return $query->execute();
     }
 
-    public function updatePicturePath(Class\Picture $picture) : bool
+    public function updatePicturePath(Entity\Picture $picture) : bool
     {
         $query = $this->db->prepare("UPDATE Picture SET picture_path = :picturePath WHERE picture_id = :pictureId");
         $query->bindValue(":pictureId", $picture->getPictureId());
@@ -34,7 +34,7 @@ class PictureManager extends BaseManager
         return $query->execute();
     }
 
-    public function deletePicture(Class\Picture $picture) : bool
+    public function deletePicture(Entity\Picture $picture) : bool
     {
         $query = $this->db->prepare("DELETE FROM Picture WHERE picture_id = :pictureId");
         $query->bindValue(":pictureId", $picture->getPictureId());

@@ -16,6 +16,7 @@
         "ext-json": "*",
         "ext-pdo": "*",
         "ext-yaml": "*",
-        "ext-http": "*"
+        "ext-http": "*",
+        "firebase/php-jwt": "^6.7"
     }
 }
