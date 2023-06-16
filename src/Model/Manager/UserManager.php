@@ -7,7 +7,7 @@ use Hetic\ReshomeApi\Model\Entity\User;
 
 class UserManager extends BaseManager
 {
-    public function create(array $userData) : User
+    public function create(array $userData) : mixed
     {
         $query = 'INSERT INTO User (first_name, last_name, email, phone_number, hashed_password, address, post_code, city, country) VALUES (:first_name, :last_name, :email, :phone_number, :hashed_password, :address, :post_code, :city, :country)';
         $stmt = $this->db->prepare($query);
@@ -24,11 +24,14 @@ class UserManager extends BaseManager
             'country' => $userData['country'],
         ]);
 
-        return $this->getUserById($this->db->lastInsertId());
+        if ($stmt->rowCount() > 0) {
+            return $this->getUserById($this->db->lastInsertId());
+        } else {
+            return false; // No rows were inserted
+        }
     }
 
-    // Utilisé uniquement par la fonction Create (sinon faille de sécu)
-    private function getUserById($id) : User
+    public function getUserById($id) : User
     {
         $query = 'SELECT * FROM User WHERE user_id= :id';
         $stmt = $this->db->prepare($query);
