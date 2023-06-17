@@ -3,7 +3,7 @@
 namespace Hetic\ReshomeApi\Model\Entity;
 use Hetic\ReshomeApi\Model\Bases\BaseClass;
 
-class User extends BaseClass
+class User extends BaseClass implements \JsonSerializable
 {
     private $first_name;
     private $last_name;
@@ -147,5 +147,10 @@ class User extends BaseClass
     public function setUserId($user_id)
     {
         $this->user_id = $user_id;
+    }
+
+    public function jsonSerialize(): mixed
+    {
+        return (object) get_object_vars($this);
     }
 }
