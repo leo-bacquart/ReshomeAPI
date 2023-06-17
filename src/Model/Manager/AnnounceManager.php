@@ -3,11 +3,11 @@
 namespace Hetic\ReshomeApi\Model\Manager;
 
 use Hetic\ReshomeApi\Model\Bases\BaseManager;
-use Hetic\ReshomeApi\Model\Class;
+use Hetic\ReshomeApi\Model\Entity;
 
 class AnnounceManager extends BaseManager
 {
-    public function addAnnounce(Class\Announce $announce): void
+    public function addAnnounce(Entity\Announce $announce): void
     {
         $query = $this->db->prepare("INSERT INTO Announce (title, description, neighborhood, arrondissement, bedroom_number, capacity, `type`, area, price) VALUES (:title, :description, :neighborhood, :arrondissement, :bedromm_number, :capacity, :`type`, :area, :price)");
 
@@ -28,7 +28,7 @@ class AnnounceManager extends BaseManager
     public function getAllAnnounces() :array
     {
         $query = $this->db->query("SELECT * FROM Announce");
-        $query->setFetchMode(\PDO::FETCH_CLASS|\PDO::FETCH_PROPS_LATE, Class\Announce::class);
+        $query->setFetchMode(\PDO::FETCH_CLASS|\PDO::FETCH_PROPS_LATE, Entity\Announce::class);
         return $query->fetchAll();
     }
 
@@ -36,7 +36,7 @@ class AnnounceManager extends BaseManager
     {
         $query = 'SELECT * FROM Announce WHERE announce_id = :id';
         $stmt = $this->db->prepare($query);
-        $stmt->setFetchMode(\PDO::FETCH_CLASS|\PDO::FETCH_PROPS_LATE, Class\Announce::class);
+        $stmt->setFetchMode(\PDO::FETCH_CLASS|\PDO::FETCH_PROPS_LATE, Entity\Announce::class);
         $stmt->execute(['id' => $id]);
         return $stmt->fetch();
     }
@@ -45,7 +45,7 @@ class AnnounceManager extends BaseManager
     {
         $query = 'SELECT * FROM Picture WHERE announce_id = :id';
         $stmt = $this->db->prepare($query);
-        $stmt->setFetchMode(\PDO::FETCH_CLASS|\PDO::FETCH_PROPS_LATE, Class\Picture::class);
+        $stmt->setFetchMode(\PDO::FETCH_CLASS|\PDO::FETCH_PROPS_LATE, Entity\Picture::class);
         $stmt->execute(['id' => $id]);
         return $stmt->fetchAll();
     }
@@ -54,7 +54,7 @@ class AnnounceManager extends BaseManager
     {
         $query = 'SELECT * FROM Review WHERE announce_id = :id';
         $stmt = $this->db->prepare($query);
-        $stmt->setFetchMode(\PDO::FETCH_CLASS|\PDO::FETCH_PROPS_LATE, Class\Review::class);
+        $stmt->setFetchMode(\PDO::FETCH_CLASS|\PDO::FETCH_PROPS_LATE, Entity\Review::class);
         $stmt->execute(['id' => $id]);
         return $stmt->fetchAll();
     }

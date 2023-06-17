@@ -1,6 +1,6 @@
 <?php
 
-namespace Hetic\ReshomeApi\Model\Class;
+namespace Hetic\ReshomeApi\Model\Entity;
 use Hetic\ReshomeApi\Model\Bases\BaseClass;
 
 class AnnounceFeature extends BaseClass
