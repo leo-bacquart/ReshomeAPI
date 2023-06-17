@@ -30,9 +30,13 @@ class AuthController extends BaseController
         return JWT::encode($token, $this->secret, 'HS256');
     }
 
-    public function verifyJwt() : mixed
+    public function verifyJwt() : false|User
     {
         $bearer = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
+        if (!$bearer) {
+            return false;
+        }
+
         $jwt = str_replace("Bearer ", "", $bearer);
         $manager = new UserManager();
 

@@ -13,6 +13,30 @@ class AnnounceController extends BaseController
         parent::__construct();
     }
 
+    public function createAnnounce() : void
+    {
+        $auth = new AuthController();
+        if ($auth->verifyJwt() && $auth->verifyJwt()->getIsAdmin())
+        {
+            $fields = ['title', 'description', 'neighborhood', 'arrondissement', 'bedroom_number', 'capacity', 'type', 'area', 'price'];
+            $data = array_map('htmlspecialchars', $_POST);
+            $data = array_intersect_key($data, array_flip($fields));
+
+            $manager = new Model\Manager\AnnounceManager();
+            $response = $manager->addAnnounce($data);
+
+            header('Content-Type: application/json');
+            if ($response) {
+                echo json_encode(['message' => 'Announce successfully created']);
+            } else {
+                echo json_encode(['message' => 'Error while creating Announce']);
+            }
+        } else {
+            echo json_encode(['message' => 'Error : User is not admin']);
+        }
+
+    }
+
     public function getAnnounces($number) : void
     {
         $manager = new Model\Manager\AnnounceManager();
@@ -40,22 +64,7 @@ class AnnounceController extends BaseController
         echo json_encode($data);
     }
 
-    public function postAnnounce() : void
-    {
-        $fields = ['title', 'description', 'neighborhood', 'arrondissement', 'bedroom_number', 'capacity', 'type', 'area', 'price'];
-        $data = array_map('htmlspecialchars', $_POST);
-        $data = array_intersect_key($data, array_flip($fields));
 
-        $manager = new Model\Manager\AnnounceManager();
-        $response = $manager->addAnnounce($data);
-
-        header('Content-Type: application/json');
-        if ($response) {
-            echo json_encode(['message' => 'Announce successfully created']);
-        } else {
-            echo json_encode(['message' => 'Error while creating Announce']);
-        }
-    }
 
 
 
