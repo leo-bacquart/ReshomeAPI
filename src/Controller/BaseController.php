@@ -16,7 +16,7 @@ abstract class BaseController
     {
         $this->viewDir = dirname(__DIR__, 1) . '/View/';
         $this->templateDir = $this->viewDir . '/Template/';
-        $this->imagesDir = dirname(__DIR__, 2) . '/public/Images/';
+        $this->imagesDir = dirname(__DIR__, 2) . '/public/images/';
     }
 
     protected function getConnection(int $user_id, string $given_password)
