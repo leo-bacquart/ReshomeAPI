@@ -25,7 +25,7 @@ class AnnounceManager extends BaseManager
         ]);
 
         if ($stmt->rowCount() > 0) {
-            return true;
+            return $this->db->lastInsertId();
         } else {
             return false; // No rows were inserted
         }

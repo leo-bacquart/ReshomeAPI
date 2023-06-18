@@ -45,7 +45,7 @@ $router->register('GET', '/api/auth/user', function () {
 
 $router->register('POST', '/api/post/announce', function () {
     $controller = new \Hetic\ReshomeApi\Controller\AnnounceController();
-    $controller->postAnnounce();
+    $controller->createAnnounce();
 });
 
 $method = $_SERVER['REQUEST_METHOD'];
