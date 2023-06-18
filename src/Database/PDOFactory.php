@@ -14,7 +14,9 @@ class PDOFactory
         $this::$dsn = 'mysql:dbname=' . $config['dbname'] . ';host=' . $config['host'];
         $this::$username = $config['username'];
         $this::$password = $config['password'];
+
     }
+
 
     private function loadConfig(string $configFilePath) : array
     {

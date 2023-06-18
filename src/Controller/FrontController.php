@@ -21,8 +21,6 @@ class FrontController extends BaseController
         foreach ($announces as $announce) {
             $data[] = $announce->jsonSerialize();
         }
-
-        header('Content-Type: application/json');
         echo json_encode($data);
     }
 
