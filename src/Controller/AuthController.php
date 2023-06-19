@@ -11,13 +11,8 @@ use Firebase\JWT\Key;
 class AuthController extends BaseController
 {
     protected User $user;
-    private string $secret;
+    private string $secret = 'verysecretpassword'; //TODO Faire marcher variables d'environnement
 
-    public function __construct()
-    {
-        parent::__construct();
-        $this->secret = getenv('secret_key');
-    }
 
     private function generateJwt($user) : string
     {
@@ -29,15 +24,20 @@ class AuthController extends BaseController
             'iss' => 'http://localhost:8080',
             'nbf' => $issuedAt->getTimestamp(),
             'exp' => $expireAt,
-            'data' => $user->getUserId()
+            'uid' => $user->getUserId()
         );
 
         return JWT::encode($token, $this->secret, 'HS256');
     }
 
-    public function verifyJwt() : mixed
+    public function verifyJwt() : false|User
     {
-        $jwt = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
+        $bearer = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
+        if (!$bearer) {
+            return false;
+        }
+
+        $jwt = str_replace("Bearer ", "", $bearer);
         $manager = new UserManager();
 
         if (!$jwt) {
@@ -45,6 +45,7 @@ class AuthController extends BaseController
         }
 
         try {
+
             $decoded = JWT::decode($jwt, new Key($this->secret, 'HS256'));
             return $manager->getUserById($decoded->uid);
         } catch (\Exception $exception) {
@@ -68,19 +69,62 @@ class AuthController extends BaseController
         }
     }
 
-    public function register(array $data)
+    public function register() : void
     {
-        $manager = new UserManager();
-        $user = $manager->create($data);
-        if ($user) {
-            $jwt = $this->generateJwt($user);
-            http_response_code(200);
-            header('Content-Type: application/json');
-            echo json_encode(['token' => $jwt]);
+        $fields = ['first_name', 'last_name', 'email', 'phone_number', 'password', 'address', 'post_code', 'city', 'country'];
+        $data = array_map('htmlspecialchars', $_POST);
+        $data = array_intersect_key($data, array_flip($fields));
+
+        $invalidCount = 0;
+        foreach ($data as $value) {
+            if (empty($value)) {
+                $invalidCount += 1;
+            }
+        }
+
+        if (!$invalidCount) {
+            $manager = new UserManager();
+            $user = $manager->create($data);
+            if ($user) {
+                $jwt = $this->generateJwt($user);
+                http_response_code(200);
+                header('Content-Type: application/json');
+                echo json_encode(['token' => $jwt]);
+            } else {
+                http_response_code(400);
+                header('Content-Type: application/json');
+                echo json_encode(['message' => 'Unable to register']);
+            }
         } else {
-            http_response_code(400);
             header('Content-Type: application/json');
-            echo json_encode(['message' => 'Unable to register']);
+            echo json_encode(['message' => $invalidCount . ' value(s) missing or invalid']);
+        }
+
+
+
+    }
+
+    public function getLoggedUser(): void
+    {
+        $user = $this->verifyJwt();
+        if ($user) {
+            header('Content-Type: application/json');
+            echo json_encode([
+                'first_name' => $user->getFirstName(),
+                'last_name' => $user->getLastName(),
+                'email' => $user->getEmail(),
+                'phone_number' => $user->getPhoneNumber(),
+                'address' => $user->getAddress(),
+                'post_code' => $user->getPostCode(),
+                'city' => $user->getCity(),
+                'country' => $user->getCountry(),
+                'is_staff' => $user->getIsStaff(),
+                'is_admin' => $user->getIsAdmin(),
+                'is_logistic' => $user->getIsLogistic()
+            ]);
+        }
+        else {
+            echo json_encode(['message' => 'Invalid or missing Token']);
         }
     }
 
