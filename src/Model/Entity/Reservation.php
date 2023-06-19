@@ -1,16 +1,14 @@
 <?php
 
 namespace Hetic\ReshomeApi\Model\Entity;
-use Hetic\ReshomeApi\Model\Bases\BaseClass;
 
-class Reservation extends BaseClass
+class Reservation
 {
     private $user_id;
     private $announce_id;
     private $begin_date;
     private $end_date;
     private $cost;
-    private $status;
     private $reservation_request;
     private $reservation_id;
 
@@ -62,16 +60,6 @@ class Reservation extends BaseClass
     public function setCost($cost)
     {
         $this->cost = $cost;
-    }
-
-    public function getStatus()
-    {
-        return $this->status;
-    }
-
-    public function setStatus($status)
-    {
-        $this->status = $status;
     }
 
     public function getReservationRequest()
