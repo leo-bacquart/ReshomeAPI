@@ -16,17 +16,23 @@ class AnnounceController extends BaseController
     public function createAnnounce() : void
     {
         $auth = new AuthController();
-        if ($auth->verifyJwt() && $auth->verifyJwt()->getIsAdmin())
+        if ($auth->verifyJwt() && ($auth->verifyJwt()->getIsAdmin() || $auth->verifyJwt()->getIsStaff()))
         {
             $fields = ['title', 'description', 'neighborhood', 'arrondissement', 'bedroom_number', 'capacity', 'type', 'area', 'price'];
             $data = array_map('htmlspecialchars', $_POST);
             $data = array_intersect_key($data, array_flip($fields));
 
-            $manager = new Model\Manager\AnnounceManager();
-            $response = $manager->addAnnounce($data);
+            $announceManager = new Model\Manager\AnnounceManager();
+            $announceId = $announceManager->addAnnounce($data);
 
             header('Content-Type: application/json');
-            if ($response) {
+            if ($announceId) {
+                $pictureManager = new Model\Manager\PictureManager();
+                if (isset($_FILES['images'])) {
+                    var_dump($_FILES);
+                    $pictureManager->uploadPicture($_FILES['images']);
+                }
+
                 echo json_encode(['message' => 'Announce successfully created']);
             } else {
                 echo json_encode(['message' => 'Error while creating Announce']);

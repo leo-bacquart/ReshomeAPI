@@ -26,3 +26,6 @@ ADD https://github.com/mlocati/docker-php-extension-installer/releases/latest/do
 
 RUN chmod +x /usr/local/bin/install-php-extensions && sync && \
     install-php-extensions http
+
+RUN echo "upload_max_filesize = 100M;" > /usr/local/etc/php/conf.d/upload.ini
+RUN echo "post_max_size = 100M;" >> /usr/local/etc/php/conf.d/upload.ini
