@@ -6,7 +6,7 @@ services:
     volumes:
       - .:/var/www
     environment:
-      - "APP_ENV=local"
+      DATABASE_PASSWORD: verysecret
 
   nginx:
     image: nginx:latest
@@ -17,3 +17,9 @@ services:
       - ./Docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
     depends_on:
       - php
+
+  database:
+    image: mariadb:10.10
+    environment:
+      MYSQL_DATABASE: reshome
+      MYSQL_ROOT_PASSWORD: veryverysecret
