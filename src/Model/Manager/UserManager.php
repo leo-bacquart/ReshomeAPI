@@ -31,15 +31,21 @@ class UserManager extends BaseManager
         }
     }
 
-    public function getUserById($id) : User
+    public function getUserById($id) : mixed
     {
         $query = 'SELECT * FROM User WHERE user_id= :id';
         $stmt = $this->db->prepare($query);
         $stmt->setFetchMode(\PDO::FETCH_CLASS|\PDO::FETCH_PROPS_LATE, User::class);
         $stmt->execute([
-            'id' => htmlspecialchars($id)
+            'id' => intval(htmlspecialchars($id))
         ]);
-        return $stmt->fetch();
+        $response = $stmt->fetch();
+        if ($response) {
+            return $response;
+        }
+        else {
+            return false;
+        }
     }
 
     public function verifyCredentials($email, $password) : mixed

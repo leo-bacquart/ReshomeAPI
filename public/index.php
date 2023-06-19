@@ -41,15 +41,22 @@ $router->register('POST', '/api/auth/register', function () {
     $controller->register();
 });
 
-$router->register('GET', '/api/auth/user', function () {
-    $controller = new \Hetic\ReshomeApi\Controller\AuthController();
+$router->register('GET', '/api/get/self', function () {
+    $controller = new \Hetic\ReshomeApi\Controller\UserController();
     $controller->getLoggedUser();
 });
 
 $router->register('POST', '/api/post/announce', function () {
     $controller = new \Hetic\ReshomeApi\Controller\AnnounceController();
-    $controller->postAnnounce();
+    $controller->createAnnounce();
 });
+
+$router->register('GET', '/api/get/user', function ()
+{
+    $controller = new \Hetic\ReshomeApi\Controller\UserController();
+    $controller->getUserDetails($_GET['id']);
+});
+
 
 $method = $_SERVER['REQUEST_METHOD'];
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);

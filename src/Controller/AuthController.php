@@ -104,29 +104,5 @@ class AuthController extends BaseController
 
     }
 
-    public function getLoggedUser(): void
-    {
-        $user = $this->verifyJwt();
-        if ($user) {
-            header('Content-Type: application/json');
-            echo json_encode([
-                'first_name' => $user->getFirstName(),
-                'last_name' => $user->getLastName(),
-                'email' => $user->getEmail(),
-                'phone_number' => $user->getPhoneNumber(),
-                'address' => $user->getAddress(),
-                'post_code' => $user->getPostCode(),
-                'city' => $user->getCity(),
-                'country' => $user->getCountry(),
-                'is_staff' => $user->getIsStaff(),
-                'is_admin' => $user->getIsAdmin(),
-                'is_logistic' => $user->getIsLogistic()
-            ]);
-        }
-        else {
-            echo json_encode(['message' => 'Invalid or missing Token']);
-        }
-    }
-
 
 }
