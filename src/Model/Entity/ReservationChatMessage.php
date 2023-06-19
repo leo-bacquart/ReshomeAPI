@@ -1,9 +1,8 @@
 <?php
 
 namespace Hetic\ReshomeApi\Model\Entity;
-use Hetic\ReshomeApi\Model\Bases\BaseClass;
 
-class ReservationChatMessage extends BaseClass
+class ReservationChatMessage
 {
     private $chat_id;
     private $content;
@@ -37,25 +36,5 @@ class ReservationChatMessage extends BaseClass
     public function setMessageId($message_id)
     {
         $this->message_id = $message_id;
-    }
-
-    public static function create($data)
-    {
-        // Code pour créer un nouveau message de chat de réservation
-    }
-
-    public static function find($chat_id, $message_id)
-    {
-        // Code pour trouver un message de chat de réservation par son ID de chat et ID de message
-    }
-
-    public function update()
-    {
-        // Code pour mettre à jour ce message de chat de réservation
-    }
-
-    public function delete()
-    {
-        // Code pour supprimer ce message de chat de réservation
     }
 }
