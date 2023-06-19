@@ -3,7 +3,7 @@
 namespace Hetic\ReshomeApi\Model\Entity;
 use Hetic\ReshomeApi\Model\Bases\BaseClass;
 
-class User extends BaseClass
+class User extends BaseClass implements \JsonSerializable
 {
     private $first_name;
     private $last_name;
@@ -24,7 +24,7 @@ class User extends BaseClass
         return $this->first_name;
     }
 
-    public function setFirstName($first_name)
+    public function setFirstName($first_name) :void
     {
         $this->first_name = $first_name;
     }
@@ -34,7 +34,7 @@ class User extends BaseClass
         return $this->last_name;
     }
 
-    public function setLastName($last_name)
+    public function setLastName($last_name) :void
     {
         $this->last_name = $last_name;
     }
@@ -44,7 +44,7 @@ class User extends BaseClass
         return $this->email;
     }
 
-    public function setEmail($email)
+    public function setEmail($email) :void
     {
         $this->email = $email;
     }
@@ -54,7 +54,7 @@ class User extends BaseClass
         return $this->phone_number;
     }
 
-    public function setPhoneNumber($phone_number)
+    public function setPhoneNumber($phone_number) :void
     {
         $this->phone_number = $phone_number;
     }
@@ -64,7 +64,7 @@ class User extends BaseClass
         return $this->hashed_password;
     }
 
-    public function setHashedPassword($hashed_password)
+    public function setHashedPassword($hashed_password) :void
     {
         $this->hashed_password = $hashed_password;
     }
@@ -74,7 +74,7 @@ class User extends BaseClass
         return $this->address;
     }
 
-    public function setAddress($address)
+    public function setAddress($address) :void
     {
         $this->address = $address;
     }
@@ -84,7 +84,7 @@ class User extends BaseClass
         return $this->post_code;
     }
 
-    public function setPostCode($post_code)
+    public function setPostCode($post_code) :void
     {
         $this->post_code = $post_code;
     }
@@ -94,7 +94,7 @@ class User extends BaseClass
         return $this->city;
     }
 
-    public function setCity($city)
+    public function setCity($city) :void
     {
         $this->city = $city;
     }
@@ -104,7 +104,7 @@ class User extends BaseClass
         return $this->country;
     }
 
-    public function setCountry($country)
+    public function setCountry($country) :void
     {
         $this->country = $country;
     }
@@ -114,7 +114,7 @@ class User extends BaseClass
         return $this->is_staff;
     }
 
-    public function setIsStaff($is_staff)
+    public function setIsStaff($is_staff) :void
     {
         $this->is_staff = $is_staff;
     }
@@ -124,7 +124,7 @@ class User extends BaseClass
         return $this->is_logistic;
     }
 
-    public function setIsLogistic($is_logistic)
+    public function setIsLogistic($is_logistic) :void
     {
         $this->is_logistic = $is_logistic;
     }
@@ -134,7 +134,7 @@ class User extends BaseClass
         return $this->is_admin;
     }
 
-    public function setIsAdmin($is_admin)
+    public function setIsAdmin($is_admin) :void
     {
         $this->is_admin = $is_admin;
     }
@@ -144,8 +144,13 @@ class User extends BaseClass
         return $this->user_id;
     }
 
-    public function setUserId($user_id)
+    public function setUserId($user_id) :void
     {
         $this->user_id = $user_id;
+    }
+
+    public function jsonSerialize(): mixed
+    {
+        return (object) get_object_vars($this);
     }
 }

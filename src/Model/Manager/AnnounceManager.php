@@ -8,22 +8,27 @@ use PDO;
 
 class AnnounceManager extends BaseManager
 {
-    public function addAnnounce(Entity\Announce $announce): void
+    public function addAnnounce(array $announceData): bool
     {
-        $query = $this->db->prepare("INSERT INTO Announce (title, description, neighborhood, arrondissement, bedroom_number, capacity, `type`, area, price) VALUES (:title, :description, :neighborhood, :arrondissement, :bedromm_number, :capacity, :`type`, :area, :price)");
+        $query = 'INSERT INTO Announce (title, description, neighborhood, arrondissement, bedroom_number, capacity, type, area, price) VALUES (:title, :description, :neighborhood, :arrondissement, :bedroom_number, :capacity, :type, :area, :price)';
+        $stmt = $this->db->prepare($query);
+        $stmt->execute([
+            'title' => $announceData['title'],
+            'description' => $announceData['description'],
+            'neighborhood' => $announceData['neighborhood'],
+            'arrondissement' => $announceData['arrondissement'],
+            'bedroom_number' => $announceData['bedroom_number'],
+            'capacity' => $announceData['capacity'],
+            'type' => $announceData['type'],
+            'area' => $announceData['area'],
+            'price' => $announceData['price']
+        ]);
 
-        $query->bindValue(":title", $announce->getTitle());
-        $query->bindValue(":description", $announce->getDescription());
-        $query->bindValue(":neighborhood", $announce->getNeighborhood());
-        $query->bindValue(":arrondissement", $announce->getArrondissement());
-        $query->bindValue(":bedroom_number", $announce->getBedroomNumber());
-        $query->bindValue(":capacity", $announce->getCapacity());
-        $query->bindValue(":type", $announce->getType());
-        $query->bindValue(":area", $announce->getArea());
-        $query->bindValue(":price", $announce->getPrice());
-
-
-        $query->execute();
+        if ($stmt->rowCount() > 0) {
+            return $this->db->lastInsertId();
+        } else {
+            return false; // No rows were inserted
+        }
     }
 
     public function getAllAnnounces() :array

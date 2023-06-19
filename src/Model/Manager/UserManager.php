@@ -31,15 +31,21 @@ class UserManager extends BaseManager
         }
     }
 
-    public function getUserById($id) : User
+    public function getUserById($id) : mixed
     {
         $query = 'SELECT * FROM User WHERE user_id= :id';
         $stmt = $this->db->prepare($query);
         $stmt->setFetchMode(\PDO::FETCH_CLASS|\PDO::FETCH_PROPS_LATE, User::class);
         $stmt->execute([
-            'id' => htmlspecialchars($id)
+            'id' => intval(htmlspecialchars($id))
         ]);
-        return $stmt->fetch();
+        $response = $stmt->fetch();
+        if ($response) {
+            return $response;
+        }
+        else {
+            return false;
+        }
     }
 
     public function verifyCredentials($email, $password) : mixed
@@ -57,5 +63,38 @@ class UserManager extends BaseManager
         }
 
         return false;
+    }
+
+    public function update(User $user)
+    {
+        $hashedPassword = password_hash($user->getHashedPassword(), PASSWORD_BCRYPT);
+        $query = 'UPDATE User SET first_name = :first_name, last_name = :last_name, email = :email, phone_number = :phone_number, hashed_password = :hashed_password, address = :address, post_code = :post_code, city = :city, country = :country, is_staff = :is_staff, is_logistic = :is_logistic, is_admin = :is_admin WHERE user_id = :user_id';
+        $stmt = $this->db->prepare($query);
+        $stmt->execute([
+            'first_name' => $user->getFirstName(),
+            'last_name' => $user->getLastName(),
+            'email' => $user->getEmail(),
+            'phone_number' => $user->getPhoneNumber(),
+            'hashed_password' => $hashedPassword,
+            'address' => $user->getAddress(),
+            'post_code' => $user->getPostCode(),
+            'city' => $user->getCity(),
+            'country' => $user->getCountry(),
+            'is_staff' => $user->getIsStaff(),
+            'is_logistic' => $user->getIsLogistic(),
+            'is_admin' => $user->getIsAdmin()
+        ]);
+    }
+
+    public function deleteUser(User $deletedUser, User $admin) : bool
+    {
+        if ($admin->getIsAdmin()) {
+            $query = 'DELETE FROM User WHERE user_id = :user_id';
+            $stmt = $this->db->prepare($query);
+            $stmt->execute(['user_id' => $deletedUser->getUserId()]);
+        } else {
+            return false;
+        }
+        return true;
     }
 }
