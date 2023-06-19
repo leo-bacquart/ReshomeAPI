@@ -2,7 +2,7 @@
 
 namespace Hetic\ReshomeApi\Model\Bases;
 
-abstract class BaseClass
+abstract class BaseClass implements \JsonSerializable
 {
     public function __construct($data = [])
     {

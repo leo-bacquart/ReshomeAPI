@@ -16,7 +16,7 @@ class AnnounceController extends BaseController
     public function createAnnounce() : void
     {
         $auth = new AuthController();
-        if ($auth->verifyJwt() && $auth->verifyJwt()->getIsAdmin())
+        if ($auth->verifyJwt() && ($auth->verifyJwt()->getIsAdmin() || $auth->verifyJwt()->getIsStaff()))
         {
             $fields = ['title', 'description', 'neighborhood', 'arrondissement', 'bedroom_number', 'capacity', 'type', 'area', 'price'];
             $data = array_map('htmlspecialchars', $_POST);
