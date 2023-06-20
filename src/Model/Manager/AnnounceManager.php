@@ -40,8 +40,8 @@ class AnnounceManager extends BaseManager
 
     public function getAnnouncePage($number) : array
     {
-        $offset = ($number - 1) * 10;
-        $query = "SELECT * FROM Announce ORDER BY announce_id LIMIT 10 OFFSET :offset";
+        $offset = ($number - 1) * 30;
+        $query = "SELECT * FROM Announce ORDER BY announce_id LIMIT 30 OFFSET :offset";
         $stmt = $this->db->prepare($query);
         $stmt->setFetchMode(\PDO::FETCH_CLASS|\PDO::FETCH_PROPS_LATE, Entity\Announce::class);
         $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
