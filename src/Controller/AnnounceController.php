@@ -3,7 +3,7 @@
 namespace Hetic\ReshomeApi\Controller;
 
 use Hetic\ReshomeApi\Model;
-use Hetic\ReshomeApi\Utils\Utils;
+use Hetic\ReshomeApi\Utils\Helper;
 
 class AnnounceController extends BaseController
 {
@@ -16,7 +16,7 @@ class AnnounceController extends BaseController
     public function createAnnounce() : void
     {
         $auth = new AuthController();
-        if ($auth->verifyJwt() && ($auth->verifyJwt()->getIsAdmin() || $auth->verifyJwt()->getIsStaff()))
+        if ($auth->verifyJwt()->getIsAdmin() || $auth->verifyJwt()->getIsStaff())
         {
             $fields = ['title', 'description', 'neighborhood', 'arrondissement', 'bedroom_number', 'capacity', 'type', 'area', 'price'];
             $data = array_map('htmlspecialchars', $_POST);
@@ -29,8 +29,10 @@ class AnnounceController extends BaseController
             if ($announceId) {
                 $pictureManager = new Model\Manager\PictureManager();
                 if (isset($_FILES['images'])) {
-                    var_dump($_FILES);
-                    $pictureManager->uploadPicture($_FILES['images']);
+                    $pictures = Helper::moveImages($_FILES['images']);
+                    foreach ($pictures as $picture) {
+                        $pictureManager->addPicture($announceId, $picture);
+                    }
                 }
 
                 echo json_encode(['message' => 'Announce successfully created']);
