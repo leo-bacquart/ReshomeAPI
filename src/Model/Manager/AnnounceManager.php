@@ -8,7 +8,7 @@ use PDO;
 
 class AnnounceManager extends BaseManager
 {
-    public function addAnnounce(array $announceData): bool
+    public function addAnnounce(array $announceData): string|false
     {
         $query = 'INSERT INTO Announce (title, description, neighborhood, arrondissement, bedroom_number, capacity, type, area, price) VALUES (:title, :description, :neighborhood, :arrondissement, :bedroom_number, :capacity, :type, :area, :price)';
         $stmt = $this->db->prepare($query);
@@ -73,6 +73,15 @@ class AnnounceManager extends BaseManager
         $stmt = $this->db->prepare($query);
         $stmt->setFetchMode(\PDO::FETCH_CLASS|\PDO::FETCH_PROPS_LATE, Entity\Review::class);
         $stmt->execute(['id' => $id]);
+        return $stmt->fetchAll();
+    }
+
+    public function getAnnounceBySearch(string $search) : array
+    {
+        $query = 'SELECT * FROM Announce WHERE LOWER(title) LIKE LOWER(:search) LIMIT 10';
+        $stmt = $this->db->prepare($query);
+        $stmt->setFetchMode(\PDO::FETCH_CLASS|\PDO::FETCH_PROPS_LATE, Entity\Announce::class);
+        $stmt->execute(['search' => '%' . $search . '%']);
         return $stmt->fetchAll();
     }
 

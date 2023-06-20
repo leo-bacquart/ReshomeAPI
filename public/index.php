@@ -31,7 +31,7 @@ $router->register('POST', '/api/auth/login', function () {
     $password = $_POST['password'];
 
     if (isset($_POST['email']) && isset($_POST['password'])) {
-        $controller = new \Hetic\ReshomeApi\Controller\Aut3000hController();
+        $controller = new \Hetic\ReshomeApi\Controller\AuthController();
         $controller->login($username, $password);
     }
 });
@@ -55,6 +55,16 @@ $router->register('GET', '/api/get/user', function ()
 {
     $controller = new \Hetic\ReshomeApi\Controller\UserController();
     $controller->getUserDetails($_GET['id']);
+});
+
+$router->register('GET', '/api/get/pictures', function () {
+    $controller = new \Hetic\ReshomeApi\Controller\PictureController();
+    $controller->getPicturesPath($_GET['id']);
+});
+
+$router->register('GET', '/api/get/search', function () {
+    $controller = new \Hetic\ReshomeApi\Controller\AnnounceController();
+    $controller->getSearch($_GET['q']);
 });
 
 
