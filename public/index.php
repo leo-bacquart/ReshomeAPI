@@ -62,6 +62,11 @@ $router->register('GET', '/api/get/pictures', function () {
     $controller->getPicturesPath($_GET['id']);
 });
 
+$router->register('GET', '/api/get/search', function () {
+    $controller = new \Hetic\ReshomeApi\Controller\AnnounceController();
+    $controller->getSearch($_GET['q']);
+});
+
 
 $method = $_SERVER['REQUEST_METHOD'];
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);

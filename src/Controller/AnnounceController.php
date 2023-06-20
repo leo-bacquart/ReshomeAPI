@@ -66,10 +66,28 @@ class AnnounceController extends BaseController
     {
         $manager = new Model\Manager\AnnounceManager();
 
-        $data = $manager->getAnnounceById($id)->jsonSerialize();
+        $data = $manager->getAnnounceById(intval(htmlspecialchars($id)))->jsonSerialize();
 
         header('Content-Type: application/json');
         echo json_encode($data);
+    }
+
+    public function getSearch($query)
+    {
+        $manager = new Model\Manager\AnnounceManager();
+        $announces = $manager->getAnnounceBySearch(htmlspecialchars($query));
+        $data = [];
+        foreach ($announces as $announce) {
+            $data[] = $announce->jsonSerialize();
+        }
+
+        header('Content-Type: application/json');
+        if ($data) {
+            echo json_encode($data);
+        } else {
+            echo json_encode(['message' => 'error']);
+        }
+
     }
 
 

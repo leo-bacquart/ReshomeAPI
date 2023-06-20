@@ -76,12 +76,13 @@ class AnnounceManager extends BaseManager
         return $stmt->fetchAll();
     }
 
-    public function getAnnounceBySearch(string $search)
+    public function getAnnounceBySearch(string $search) : array
     {
-        $query = "SELECT * FROM Announce WHERE title LIKE :search LIMIT 10";
+        $query = 'SELECT * FROM Announce WHERE LOWER(title) LIKE LOWER(:search) LIMIT 10';
         $stmt = $this->db->prepare($query);
-        $stmt->setFetchMode(\PDO::FETCH_CLASS|\PDO::FETCH_PROPS_LATE, Entity\Review::class);
-        $stmt->execute(['search' => htmlspecialchars($search)]);
+        $stmt->setFetchMode(\PDO::FETCH_CLASS|\PDO::FETCH_PROPS_LATE, Entity\Announce::class);
+        $stmt->execute(['search' => '%' . $search . '%']);
+        return $stmt->fetchAll();
     }
 
     public function update()
