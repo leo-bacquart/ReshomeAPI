@@ -27,6 +27,11 @@ $router->register('GET', '/api/get/announce', function () {
     }
 });
 
+$router->register('GET', '/api/get/announce/reviews', function () {
+    $controller = new \Hetic\ReshomeApi\Controller\ReviewController();
+    $controller->getReviewByAnnounceId();
+});
+
 $router->register('POST', '/api/auth/login', function () {
     $username = $_POST['email'];
     $password = $_POST['password'];
@@ -93,7 +98,10 @@ $router->register('POST', '/api/post/review', function () {
     $controller->createReview();
 });
 
-
+$router->register('DELETE', '/api/delete/review', function () {
+    $controller = new \Hetic\ReshomeApi\Controller\ReviewController();
+    $controller->deleteReview();
+});
 
 $method = $_SERVER['REQUEST_METHOD'];
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);

@@ -74,8 +74,66 @@ class ReviewController extends BaseController
 
         if(!$newReview){
             echo json_encode(['message' => 'Error while creating review']);
+            return;
         }
 
         echo json_encode(['message' => 'Review successfully added']);
+    }
+
+    public function getReviewByAnnounceId(): void
+    {
+        //Recupération des paramètres
+        $announceId = intval($_GET['id']);
+
+        // Récupération des avis liés
+        $manager = new Manager\ReviewManager();
+        $reviews = $manager->getAnnounceReviews($announceId);
+
+        $data =[];
+
+        // Encodage dans un Array
+        foreach ($reviews as $review) {
+            $data[] = $review->jsonSerialize();
+        }
+
+        echo json_encode($data);
+    }
+
+    public function deleteReview() : void
+    {
+        // Récupération des paramètres
+        $reviewId = intval($_GET['id']);
+
+        // Récupération de l'user
+        $auth = new AuthController();
+        $user = $auth->verifyJwt();
+
+        if(!$user){
+            echo json_encode(['error' => 'User not logged']);
+            return;
+        }
+
+
+        $reviewManager = new Manager\ReviewManager();
+        $review = $reviewManager->getReviewById($reviewId);
+
+        if (!$review) {
+            echo json_encode(['error' => 'Review not found']);
+            return;
+        }
+
+        if(!$user->getIsAdmin() && !$user->getIsStaff() && $user->getUserId() !== $review->getUserId()){
+            echo json_encode(['error' => 'You are not authorized to delete this review']);
+            return;
+        }
+
+        $delete = $reviewManager->deleteReview($review);
+
+        if ($delete) {
+            echo json_encode(['message' => 'Review deleted successfully']);
+        } else {
+            echo json_encode(['error' => 'Failed to delete the review']);
+        }
+
     }
 }
