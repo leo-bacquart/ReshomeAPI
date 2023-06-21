@@ -56,6 +56,17 @@ class ReservationManager extends BaseManager
         return $query->fetchAll();
     }
 
+    public function getReservationsByUserAndAnnounceId(int $userId, int $announceId) : array
+    {
+        $query = $this->db->prepare("SELECT * FROM Reservation where announce_id = :announceId AND user_id = :userId");
+        $query->bindValue(":announceId", $announceId);
+        $query->bindValue(":userId", $userId);
+        $query->setFetchMode(\PDO::FETCH_CLASS|\PDO::FETCH_PROPS_LATE, Reservation::class);
+
+        $query->execute();
+        return $query->fetchAll();
+    }
+
     public function updateReservation(Reservation $reservation) : void
     {
         $stmt = $this->db->prepare('UPDATE Reservation SET user_id = :user_id, announce_id = :announce_id, begin_date = :begin_date, end_date = :end_date, cost = :cost, reservation_request = :reservation_request WHERE reservation_id = :id');
