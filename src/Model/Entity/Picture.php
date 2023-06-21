@@ -3,11 +3,11 @@
 namespace Hetic\ReshomeApi\Model\Entity;
 use Hetic\ReshomeApi\Model\Bases\BaseClass;
 
-class Picture extends BaseClass
+class Picture extends BaseClass implements \JsonSerializable
 {
-    private int $picture_id;
-    private int $announce_id;
-    private string $picture_path;
+    protected int $picture_id;
+    protected int $announce_id;
+    protected string $picture_path;
 
     /**
      * @return int
@@ -55,5 +55,10 @@ class Picture extends BaseClass
     public function setPicturePath(string $picture_path): void
     {
         $this->picture_path = $picture_path;
+    }
+
+    public function jsonSerialize(): mixed
+    {
+        return (object) get_object_vars($this);
     }
 }

@@ -7,7 +7,7 @@ class Announce extends BaseClass implements \JsonSerializable
 {
     private string $title;
     private string $description;
-    private string $neighborhood;
+    public string $neighborhood;
     private int $arrondissement;
     private int $bedroom_number;
     private int $capacity;
