@@ -26,6 +26,16 @@ class ReservationManager extends BaseManager
         }
     }
 
+    public function getReservationById(int $reservationId) : mixed
+    {
+        $query = $this->db->prepare("SELECT * FROM Reservation where reservation_id = :reservationId");
+        $query->bindValue(":reservationId", $reservationId);
+        $query->setFetchMode(\PDO::FETCH_CLASS|\PDO::FETCH_PROPS_LATE, Reservation::class);
+
+        $query->execute();
+        return $query->fetch();
+    }
+
     public function getReservationsByUserId(int $userId) : array
     {
         $query = $this->db->prepare("SELECT * FROM Reservation where user_id = :userId");

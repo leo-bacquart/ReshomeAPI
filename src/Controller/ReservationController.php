@@ -89,16 +89,17 @@ class ReservationController extends BaseController
         echo json_encode($data);
     }
 
-    public function getSelfReservations()
+    public function getSelfReservations(): void
     {
         $auth = new AuthController();
         $user = $auth->verifyJwt();
 
         if(!$user){
+            echo json_encode(['message' => 'user not logged']);
             return;
         }
 
-        $manager = new ReservationManager();
+        $manager = new Manager\ReservationManager();
         $reservations = $manager->getReservationsByUserId($user->getUserId());
 
         $data =[];
@@ -107,15 +108,40 @@ class ReservationController extends BaseController
             $data[] = $reservation->jsonSerialize();
         }
 
+        if (!$data) {
+            echo json_encode(['message' => 'You have no reservations']);
+        }
         echo json_encode($data);
     }
 
-    public function getReservationDetail(int $id) : void
+    public function getReservationDetail() : void
     {
-        $manager = new ReservationManager();
+        $id = intval(htmlspecialchars($_GET['id']));
+        $auth = new AuthController();
+        $user = $auth->verifyJwt();
+        $userId = $user->getUserId();
 
-        $data = $manager->getReservationById($id)->jsonSerialize();
 
-        echo json_encode($data);
+        if (!$user) {
+            echo json_encode(['message' => 'User not logged']);
+            return;
+        }
+
+        $manager = new Manager\ReservationManager();
+
+        $reservation = $manager->getReservationById($id);
+        if (!$reservation) {
+            echo json_encode(['message' => 'Reservation not found']);
+            return;
+        }
+
+        $reservationUserId = $reservation->getUserId();
+
+        if ($reservationUserId != $userId && !$user->getIsAdmin() && !$user->getIsStaff()) {
+            echo json_encode(['message' => 'You have no rights to access this data']);
+            return;
+        }
+
+        echo json_encode($reservation->jsonSerialize());
     }
 }

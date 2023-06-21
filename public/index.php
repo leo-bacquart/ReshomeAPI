@@ -73,9 +73,19 @@ $router->register('POST', '/api/post/reservation', function () {
     $controller->createReservation();
 });
 
-$router->register('GET', '/api/get/reservations', function () {
+$router->register('GET', '/api/get/reservations/announce', function () {
     $controller = new \Hetic\ReshomeApi\Controller\ReservationController();
     $controller->getReservationsByAnnounceId();
+});
+
+$router->register('GET', '/api/get/reservations/self', function () {
+    $controller = new \Hetic\ReshomeApi\Controller\ReservationController();
+    $controller->getSelfReservations();
+});
+
+$router->register('GET', '/api/get/reservation', function () {
+    $controller = new \Hetic\ReshomeApi\Controller\ReservationController();
+    $controller->getReservationDetail();
 });
 
 
