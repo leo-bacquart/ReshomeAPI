@@ -2,7 +2,9 @@
 
 namespace Hetic\ReshomeApi\Model\Entity;
 
-class Reservation
+use Hetic\ReshomeApi\Model\Bases\BaseClass;
+
+class Reservation extends BaseClass implements \JsonSerializable
 {
     private int $user_id;
     private int $announce_id;
@@ -97,5 +99,13 @@ class Reservation
     public function setStatus(int $status): void
     {
         $this->status = $status;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function jsonSerialize(): mixed
+    {
+        return (object) get_object_vars($this);
     }
 }

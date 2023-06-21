@@ -72,7 +72,7 @@ class ReservationController extends BaseController
         $auth = new AuthController();
         $user = $auth->verifyJwt();
 
-        if (!$user->getIsAdmin() && !$user->getIsStaff()){
+        if (!$user || (!$user->getIsAdmin() && !$user->getIsStaff())){
             echo json_encode(['message' => 'Error : You cannot access this data']);
             return;
         }

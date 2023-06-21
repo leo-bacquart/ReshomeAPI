@@ -3,7 +3,7 @@
 namespace Hetic\ReshomeApi\Model\Entity;
 use Hetic\ReshomeApi\Model\Bases\BaseClass;
 
-class Review extends BaseClass
+class Review extends BaseClass implements \JsonSerializable
 {
     private $review_id;
     private $announce_id;
@@ -77,5 +77,10 @@ class Review extends BaseClass
     public function setDate($date): void
     {
         $this->date = $date;
+    }
+
+    public function jsonSerialize(): mixed
+    {
+        return (object) get_object_vars($this);
     }
 }
