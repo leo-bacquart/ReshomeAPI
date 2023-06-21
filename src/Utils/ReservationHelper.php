@@ -2,6 +2,9 @@
 
 namespace Hetic\ReshomeApi\Utils;
 
+use Hetic\ReshomeApi\Model\Entity\Announce;
+use Hetic\ReshomeApi\Model\Entity\Reservation;
+use Hetic\ReshomeApi\Model\Entity\User;
 use Hetic\ReshomeApi\Model\Manager\ReservationManager;
 
 class ReservationHelper
@@ -75,5 +78,25 @@ class ReservationHelper
         }
 
         return $dates;
+    }
+
+    public static function hasBookedThisAnnounce(User $user, Announce $announce) : int
+    {
+        $reservationManager = new ReservationManager();
+        $userReservations = $reservationManager->getReservationsByUserAndAnnounceId($user->getUserId(), $announce->getAnnounceId());
+
+        if (!$userReservations) {
+            return 0;
+        }
+        return count($userReservations);
+    }
+
+    public static function isPassed(Reservation $reservation) : bool
+    {
+        $date = strtotime(date('Y-m-d'));
+        if ($date >= strtotime($reservation->getEndDate())) {
+            return true;
+        }
+        return false;
     }
 }

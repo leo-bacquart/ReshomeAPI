@@ -88,6 +88,12 @@ $router->register('GET', '/api/get/reservation', function () {
     $controller->getReservationDetail();
 });
 
+$router->register('POST', '/api/post/review', function () {
+    $controller = new \Hetic\ReshomeApi\Controller\ReviewController();
+    $controller->createReview();
+});
+
+
 
 $method = $_SERVER['REQUEST_METHOD'];
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
