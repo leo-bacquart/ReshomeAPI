@@ -48,7 +48,7 @@ class ReservationManager extends BaseManager
 
     public function updateReservation(Reservation $reservation) : void
     {
-        $stmt = $this->db->prepare('UPDATE reservation SET user_id = :user_id, announce_id = :announce_id, begin_date = :begin_date, end_date = :end_date, cost = :cost, reservation_request = :reservation_request WHERE id = :id');
+        $stmt = $this->db->prepare('UPDATE Reservation SET user_id = :user_id, announce_id = :announce_id, begin_date = :begin_date, end_date = :end_date, cost = :cost, reservation_request = :reservation_request WHERE reservation_id = :id');
         $stmt->bindValue('user_id', $reservation->getUserId());
         $stmt->bindValue('announce_id', $reservation->getAnnounceId());
         $stmt->bindValue('begin_date', $reservation->getBeginDate());
