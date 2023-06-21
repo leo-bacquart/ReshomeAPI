@@ -2,6 +2,7 @@
 
 namespace Hetic\ReshomeApi\Utils;
 
+use Hetic\ReshomeApi\Model\Entity\Announce;
 use http\Exception\RuntimeException;
 
 class Helper
@@ -55,4 +56,5 @@ class Helper
         }
         return $newFileNames;
     }
+
 }

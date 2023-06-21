@@ -1,119 +1,64 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 <?php
 
 namespace Hetic\ReshomeApi\Model\Manager;
 
+use Hetic\ReshomeApi\Model\Bases\BaseManager;
 use Hetic\ReshomeApi\Model\Entity\Reservation;
 
 class ReservationManager extends BaseManager
 {
-    public function addReservation(Reservation $reservation)
+    public function addReservation(array $reservationData) : array
     {
-        $stmt = $this->db->prepare('INSERT INTO reservation (user_id, announce_id, begin_date, end_date, cost, reservation_request) VALUES (:user_id, :announce_id, :begin_date, :end_date, :cost, :reservation_request)');
-        $stmt->bindValue('user_id', $reservation->getUserId());
-        $stmt->bindValue('announce_id', $reservation->getAnnounceId());
-        $stmt->bindValue('begin_date', $reservation->getBeginDate());
-        $stmt->bindValue('end_date', $reservation->getEndDate());
-        $stmt->bindValue('cost', $reservation->getCost());
-        $stmt->bindValue('reservation_request', $reservation->getReservationRequest());
+        $query = 'INSERT INTO Reservation (user_id, announce_id, begin_date, end_date, cost, reservation_request) VALUES (:user_id, :announce_id, :begin_date, :end_date, :cost, :reservation_request)';
+        $stmt = $this->db->prepare($query);
+        $stmt->bindValue('user_id', $reservationData['user_id']);
+        $stmt->bindValue('announce_id',$reservationData['announce_id']);
+        $stmt->bindValue('begin_date',$reservationData['begin_date']);
+        $stmt->bindValue('end_date',$reservationData['end_date']);
+        $stmt->bindValue('cost',$reservationData['cost']);
+        $stmt->bindValue('reservation_request',$reservationData['reservation_request']);
         $stmt->execute();
 
-        $reservation->setReservationId($this->db->lastInsertId());
-    }
-
-    public function getReservationById($reservation_id)
-    {
-        $stmt = $this->db->prepare('SELECT * FROM reservation WHERE id = :id');
-        $stmt->bindValue('id', $reservation_id);
-        $stmt->execute();
-        $data = $stmt->fetch();
-
-        if ($data) {
-            $reservation = new Reservation();
-            $reservation->setUserId($data['user_id']);
-            $reservation->setAnnounceId($data['announce_id']);
-            $reservation->setBeginDate($data['begin_date']);
-            $reservation->setEndDate($data['end_date']);
-            $reservation->setCost($data['cost']);
-            $reservation->setReservationRequest($data['reservation_request']);
-            $reservation->setReservationId($data['id']);
-            return $reservation;
+        if ($stmt->rowCount() > 0) {
+            return ['message' => 'Reservation successfully created'];
+        } else {
+            return ['message' => 'Error while creating reservation']; // No rows were inserted
         }
-
-        return null;
     }
 
-    public function updateReservation(Reservation $reservation)
+    public function getReservationById(int $reservationId) : mixed
     {
-        $stmt = $this->db->prepare('UPDATE reservation SET user_id = :user_id, announce_id = :announce_id, begin_date = :begin_date, end_date = :end_date, cost = :cost, reservation_request = :reservation_request WHERE id = :id');
+        $query = $this->db->prepare("SELECT * FROM Reservation where reservation_id = :reservationId");
+        $query->bindValue(":reservationId", $reservationId);
+        $query->setFetchMode(\PDO::FETCH_CLASS|\PDO::FETCH_PROPS_LATE, Reservation::class);
+
+        $query->execute();
+        return $query->fetch();
+    }
+
+    public function getReservationsByUserId(int $userId) : array
+    {
+        $query = $this->db->prepare("SELECT * FROM Reservation where user_id = :userId");
+        $query->bindValue(":userId", $userId);
+        $query->setFetchMode(\PDO::FETCH_CLASS|\PDO::FETCH_PROPS_LATE, Reservation::class);
+
+        $query->execute();
+        return $query->fetchAll();
+    }
+
+    public function getReservationsByAnnounceId(int $announceId) : array
+    {
+        $query = $this->db->prepare("SELECT * FROM Reservation where announce_id = :announceId");
+        $query->bindValue(":announceId", $announceId);
+        $query->setFetchMode(\PDO::FETCH_CLASS|\PDO::FETCH_PROPS_LATE, Reservation::class);
+
+        $query->execute();
+        return $query->fetchAll();
+    }
+
+    public function updateReservation(Reservation $reservation) : void
+    {
+        $stmt = $this->db->prepare('UPDATE Reservation SET user_id = :user_id, announce_id = :announce_id, begin_date = :begin_date, end_date = :end_date, cost = :cost, reservation_request = :reservation_request WHERE reservation_id = :id');
         $stmt->bindValue('user_id', $reservation->getUserId());
         $stmt->bindValue('announce_id', $reservation->getAnnounceId());
         $stmt->bindValue('begin_date', $reservation->getBeginDate());
@@ -124,9 +69,9 @@ class ReservationManager extends BaseManager
         $stmt->execute();
     }
 
-    public function deleteReservation(Reservation $reservation)
+    public function deleteReservation(Reservation $reservation) : void
     {
-        $stmt = $this->db->prepare('DELETE FROM reservation WHERE id = :id');
+        $stmt = $this->db->prepare('DELETE FROM Reservation WHERE reservation_id = :id');
         $stmt->bindValue('id', $reservation->getReservationId());
         $stmt->execute();
     }

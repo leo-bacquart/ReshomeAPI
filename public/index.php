@@ -2,6 +2,7 @@
 
     header("Access-Control-Allow-Origin: *");
     header("Access-Control-Allow-Credentials: true");
+    header('Content-Type: application/json');
 
 require_once __DIR__.'/../vendor/autoload.php';
 
@@ -65,6 +66,26 @@ $router->register('GET', '/api/get/pictures', function () {
 $router->register('GET', '/api/get/search', function () {
     $controller = new \Hetic\ReshomeApi\Controller\AnnounceController();
     $controller->getSearch($_GET['q']);
+});
+
+$router->register('POST', '/api/post/reservation', function () {
+    $controller = new \Hetic\ReshomeApi\Controller\ReservationController();
+    $controller->createReservation();
+});
+
+$router->register('GET', '/api/get/reservations/announce', function () {
+    $controller = new \Hetic\ReshomeApi\Controller\ReservationController();
+    $controller->getReservationsByAnnounceId();
+});
+
+$router->register('GET', '/api/get/reservations/self', function () {
+    $controller = new \Hetic\ReshomeApi\Controller\ReservationController();
+    $controller->getSelfReservations();
+});
+
+$router->register('GET', '/api/get/reservation', function () {
+    $controller = new \Hetic\ReshomeApi\Controller\ReservationController();
+    $controller->getReservationDetail();
 });
 
 
