@@ -2,6 +2,7 @@
 
 namespace Hetic\ReshomeApi\Utils;
 
+use Hetic\ReshomeApi\Model\Entity\Announce;
 use http\Exception\RuntimeException;
 
 class Helper
@@ -36,7 +37,7 @@ class Helper
             if ($pictures['error'][$i] != UPLOAD_ERR_OK) {
                 return 'Error : Error in upload';
             }
-            if ($pictures['size'][$i] > 100000000000000000) {
+            if ($pictures['size'][$i] > 1000000000000000) {
                 return 'Error : Image size is too much';
             }
             if ($pictures['type'][$i] != 'image/jpeg' && $pictures['type'][$i] != 'image/jpg' && $pictures['type'][$i] != 'image/png') {
@@ -55,4 +56,5 @@ class Helper
         }
         return $newFileNames;
     }
+
 }
