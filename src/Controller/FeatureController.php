@@ -23,6 +23,17 @@ class FeatureController
         }
     }
 
+    public function getAnnounceFeaturesById($announceId)
+    {
+        $features = $this->featureManager->getAnnounceFeaturesById($announceId);
+        if ($features) {
+            echo json_encode($features);
+        } else {
+            echo json_encode(['message' => 'No features found for this announce' ]);
+        }
+    }
+
+
 
 }
 
