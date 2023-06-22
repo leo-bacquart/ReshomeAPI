@@ -59,4 +59,25 @@ class FeatureManager extends BaseManager
         return $query->execute();
     }
 
+    public function getFeatureById(int $id): Entity\Feature
+    {
+        $query = $this->db->prepare("SELECT * FROM Feature WHERE feature_id = :id");
+        $query->bindValue(":id", $id);
+        $query->setFetchMode(\PDO::FETCH_CLASS|\PDO::FETCH_PROPS_LATE, Entity\Feature::class);
+        $query->execute();
+
+        return $query->fetch();
+    }
+
+    public function getAnnounceFeaturesById(int $announce_id) : array
+    {
+        $query = $this->db->prepare("SELECT * FROM AnnounceFeature as af INNER JOIN Feature as f ON f.id = af.feature_id WHERE announce_id =:announceId");
+        $query->bindValue(":announce_id", $announce_id);
+        $query->setFetchMode(\PDO::FETCH_CLASS|\PDO::FETCH_PROPS_LATE, "Feature");
+
+        return $query->fetchAll();
+    }
+
+
+
 }
