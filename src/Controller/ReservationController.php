@@ -2,92 +2,146 @@
 
 namespace Hetic\ReshomeApi\Controller;
 
-use Hetic\ReshomeApi\Model;
-use Hetic\ReshomeApi\Utils\Utils;
-use Hetic\ReshomeApi\Model\Entity\Reservation;
+use Hetic\ReshomeApi\Model\Manager;
+use Hetic\ReshomeApi\Utils\Helper;
+use Hetic\ReshomeApi\Utils\ReservationHelper;
 
 class ReservationController extends BaseController
 {
-    public function __construct()
+    public function createReservation(): void
     {
-        parent::__construct();
+
+        $auth = new AuthController();
+        $user = $auth->verifyJwt();
+
+        if(!$user){
+            echo json_encode(['message' => 'User not logged in']);
+            return;
+        }
+
+
+        $announceId = $_POST['announce_id'];
+        $begin_date = $_POST['begin_date'];
+        $end_date = $_POST['end_date'];
+        $reservation_request = $_POST['reservation_request'];
+
+        if (!ReservationHelper::isAvailable($announceId, $begin_date, $end_date)) {
+            echo json_encode(['message' => 'These dates are not available']);
+            return;
+        }
+
+        $startTimestamp = strtotime($begin_date);
+        $endTimestamp = strtotime($end_date);
+
+        if ($endTimestamp <= $startTimestamp) {
+            echo json_encode(['message' => 'You cannot book for 0 nights or negative time']);
+            return;
+        }
+
+        $currentDate = strtotime(date('Y-m-d'));
+
+        if ($startTimestamp < $currentDate) {
+            echo json_encode(['message' => 'You cannot book in past dates']);
+            return;
+        }
+
+        $announceManager = new Manager\AnnounceManager();
+        $announce = $announceManager->getAnnounceById($announceId);
+
+        $cost = ReservationHelper::getReservationCost($begin_date, $end_date, $announce->getPrice());
+
+        $reservationData = [
+            'user_id' => $user->getUserId(),
+            'announce_id' => $announceId,
+            'begin_date' => $begin_date,
+            'end_date' => $end_date,
+            'cost' => $cost,
+            'reservation_request' => $reservation_request
+        ];
+
+        $reservationManager = new Manager\ReservationManager();
+
+        $response = $reservationManager->addReservation($reservationData);
+
+        echo json_encode($response);
     }
 
-    public function createReservation() : void
+    public function getReservationsByAnnounceId() : void
+    {
+        $announceId = intval(htmlspecialchars($_GET['id']));
+        $auth = new AuthController();
+        $user = $auth->verifyJwt();
+
+        if (!$user || (!$user->getIsAdmin() && !$user->getIsStaff())){
+            echo json_encode(['message' => 'Error : You cannot access this data']);
+            return;
+        }
+
+        $manager = new Manager\ReservationManager();
+        $reservations = $manager->getReservationsByAnnounceId($announceId);
+
+        $data =[];
+
+        foreach ($reservations as $reservation) {
+            $data[] = $reservation->jsonSerialize();
+        }
+
+        echo json_encode($data);
+    }
+
+    public function getSelfReservations(): void
     {
         $auth = new AuthController();
-        if ($auth->verifyJwt() && ($auth->verifyJwt()->getIsAdmin() || $auth->verifyJwt()->getIsStaff()))
-        {
-            $fields = ['user_id', 'announce_id', 'begin_date', 'end_date', 'cost', 'reservation_request'];
-            $data = array_map('htmlspecialchars', $_POST);
-            $data = array_intersect_key($data, array_flip($fields));
+        $user = $auth->verifyJwt();
 
-            $reservationManager = new Model\Manager\ReservationManager();
-            $reservationId = $reservationManager->addReservation(new Reservation($data));
-
-            header('Content-Type: application/json');
-            if ($reservationId) {
-                echo json_encode(['message' => 'Reservation successfully created']);
-            } else {
-                echo json_encode(['message' => 'Error while creating Reservation']);
-            }
-        } else {
-            echo json_encode(['message' => 'Error : User is not admin']);
+        if(!$user){
+            echo json_encode(['message' => 'user not logged']);
+            return;
         }
+
+        $manager = new Manager\ReservationManager();
+        $reservations = $manager->getReservationsByUserId($user->getUserId());
+
+        $data =[];
+
+        foreach ($reservations as $reservation) {
+            $data[] = $reservation->jsonSerialize();
+        }
+
+        if (!$data) {
+            echo json_encode(['message' => 'You have no reservations']);
+        }
+        echo json_encode($data);
     }
 
-    public function getReservation($reservation_id) : void
+    public function getReservationDetail() : void
     {
-        $reservationManager = new Model\Manager\ReservationManager();
-        $reservation = $reservationManager->getReservationById($reservation_id);
-        header('Content-Type: application/json');
-        if ($reservation) {
-            echo json_encode($reservation->jsonSerialize());
-        } else {
-            echo json_encode(['message' => 'Error : No reservation found with this ID']);
-        }
-    }
-
-    public function updateReservation() : void
-    {
+        $id = intval(htmlspecialchars($_GET['id']));
         $auth = new AuthController();
-        if ($auth->verifyJwt() && ($auth->verifyJwt()->getIsAdmin() || $auth->verifyJwt()->getIsStaff()))
-        {
-            $fields = ['reservation_id', 'user_id', 'announce_id', 'begin_date', 'end_date', 'cost', 'reservation_request'];
-            $data = array_map('htmlspecialchars', $_POST);
-            $data = array_intersect_key($data, array_flip($fields));
+        $user = $auth->verifyJwt();
+        $userId = $user->getUserId();
 
-            $reservationManager = new Model\Manager\ReservationManager();
-            $reservation = $reservationManager->getReservationById($data['reservation_id']);
-            if($reservation){
-                $reservation->set($data);
-                $reservationManager->updateReservation($reservation);
-                header('Content-Type: application/json');
-                echo json_encode(['message' => 'Reservation successfully updated']);
-            } else {
-                echo json_encode(['message' => 'Error : No reservation found with this ID']);
-            }
-        } else {
-            echo json_encode(['message' => 'Error : User is not admin']);
-        }
-    }
 
-    public function deleteReservation($reservation_id) : void
-    {
-        $auth = new AuthController();
-        if ($auth->verifyJwt() && ($auth->verifyJwt()->getIsAdmin() || $auth->verifyJwt()->getIsStaff()))
-        {
-            $reservationManager = new Model\Manager\ReservationManager();
-            $reservation = $reservationManager->getReservationById($reservation_id);
-            if($reservation){
-                $reservationManager->deleteReservation($reservation);
-                header('Content-Type: application/json');
-                echo json_encode(['message' => 'Reservation successfully deleted']);
-            } else {
-                echo json_encode(['message' => 'Error : No reservation found with this ID']);
-            }
-        } else {
-            echo json_encode(['message' => 'Error : User is not admin']);
+        if (!$user) {
+            echo json_encode(['message' => 'User not logged']);
+            return;
         }
+
+        $manager = new Manager\ReservationManager();
+
+        $reservation = $manager->getReservationById($id);
+        if (!$reservation) {
+            echo json_encode(['message' => 'Reservation not found']);
+            return;
+        }
+
+        $reservationUserId = $reservation->getUserId();
+
+        if ($reservationUserId != $userId && !$user->getIsAdmin() && !$user->getIsStaff()) {
+            echo json_encode(['message' => 'You have no rights to access this data']);
+            return;
+        }
+
+        echo json_encode($reservation->jsonSerialize());
     }
 }

@@ -11,9 +11,9 @@ class PDOFactory
         $configFilePath = __DIR__ . '/database.yml';
         $config = $this->loadConfig($configFilePath);
 
-        $this::$dsn = 'mysql:dbname=' . $config['dbname'] . ';host=' . $config['host'];
-        $this::$username = $config['username'];
-        $this::$password = $config['password'];
+        self::$dsn = 'mysql:dbname=' . $config['dbname'] . ';host=' . $config['host'];
+        self::$username = $config['username'];
+        self::$password = $config['password'];
 
     }
 

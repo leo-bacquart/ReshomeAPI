@@ -49,4 +49,52 @@ class UserController extends BaseController
             echo json_encode(['message' => 'Error : You cannot access this data']);
         }
     }
+
+    public function getAllUsers() : void
+    {
+        $page = intval($_GET['page']);
+
+        if (!$page) {
+            $page = 1;
+        }
+
+        $manager = new UserManager();
+        $users = $manager->getUserPage($page);
+        $data = [];
+
+        foreach ($users as $user) {
+            $data[] = $user->jsonSerialize();
+        }
+
+        header('Content-Type: application/json');
+        if ($data) {
+            echo json_encode($data);
+        } else {
+            echo json_encode(['message' => 'Error : no values in this page']);
+        }
+    }
+
+    public function deleteUser() : void
+    {
+        $userId = intval($_GET['id']);
+
+        $auth = new AuthController();
+        $user = $auth->verifyJwt();
+
+        if(!$user){
+            echo json_encode(['error' => 'User not logged']);
+            return;
+        }
+
+        if(!$user->getIsAdmin()){
+            echo json_encode(['error' => 'You are not authorized to delete accounts']);
+            return;
+        }
+
+        $userManager = new UserManager();
+        $userManager->deleteUser($userId);
+
+        echo json_encode(['message' => 'User deleted successfully']);
+
+    }
 }

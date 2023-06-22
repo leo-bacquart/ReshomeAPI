@@ -48,6 +48,19 @@ class UserManager extends BaseManager
         }
     }
 
+    public function getUserPage($number) : array
+    {
+        $offset = ($number - 1) * 10;
+
+        $query = "SELECT * FROM User ORDER BY user_id LIMIT 10 OFFSET :offset";
+        $stmt = $this->db->prepare($query);
+        $stmt->setFetchMode(\PDO::FETCH_CLASS|\PDO::FETCH_PROPS_LATE, User::class);
+        $stmt->bindParam(':offset', $offset, \PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->fetchAll();
+    }
+
     public function verifyCredentials($email, $password) : mixed
     {
         $query = 'SELECT * FROM User WHERE email= :email';
@@ -86,15 +99,10 @@ class UserManager extends BaseManager
         ]);
     }
 
-    public function deleteUser(User $deletedUser, User $admin) : bool
+    public function deleteUser(int $userId) : void
     {
-        if ($admin->getIsAdmin()) {
-            $query = 'DELETE FROM User WHERE user_id = :user_id';
-            $stmt = $this->db->prepare($query);
-            $stmt->execute(['user_id' => $deletedUser->getUserId()]);
-        } else {
-            return false;
-        }
-        return true;
+        $query = 'DELETE FROM User WHERE user_id = :user_id';
+        $stmt = $this->db->prepare($query);
+        $stmt->execute(['user_id' => $userId]);
     }
 }
