@@ -37,6 +37,9 @@ class AnnounceController extends BaseController
                     foreach ($pictures as $picture) {
                         $pictureManager->addPicture($announceId, $picture);
                     }
+                } else {
+                    echo json_encode(['message' => 'No images found']);
+                    return;
                 }
 
                 echo json_encode(['message' => 'Announce successfully created']);
