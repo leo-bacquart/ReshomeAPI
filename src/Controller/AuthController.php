@@ -62,9 +62,7 @@ class AuthController extends BaseController
         $user = $manager->verifyCredentials($username, $password);
         if ($user) {
             $jwt = $this->generateJwt($user);
-            http_response_code(200);
-            header('Content-Type: application/json');
-            echo json_encode(['token' => $jwt]);
+            echo $jwt;
         } else {
             http_response_code(401);
             header('Content-Type: application/json');
@@ -91,8 +89,7 @@ class AuthController extends BaseController
             if ($user) {
                 $jwt = $this->generateJwt($user);
                 http_response_code(200);
-                header('Content-Type: application/json');
-                echo json_encode(['token' => $jwt]);
+                echo $jwt;
             } else {
                 http_response_code(400);
                 header('Content-Type: application/json');
