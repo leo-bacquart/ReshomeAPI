@@ -71,7 +71,7 @@ class AuthController extends BaseController
 
     public function register() : void
     {
-        $fields = ['first_name', 'last_name', 'email', 'phone_number', 'password', 'address', 'post_code', 'city', 'country'];
+        $fields = ['first_name', 'last_name', 'email', 'phone_number', 'password'];
         $data = array_map('htmlspecialchars', $_POST);
         $data = array_intersect_key($data, array_flip($fields));
 
