@@ -10,21 +10,17 @@ $router = new \Hetic\ReshomeApi\Router\Router();
 
 
 $router->register('GET', '/api/test', function() {
-    return json_encode(["message" => "Hello, world!"]);
+    return json_encode(["message" => "Reshome API"]);
 });
 
 $router->register('GET', '/api/get/announces', function () {
     $controller = new \Hetic\ReshomeApi\Controller\AnnounceController();
-    isset($_GET['page']) ? $page = intval($_GET['page']) : $page = 1;
-    $controller->getAnnounces($page);
-
+    $controller->getAnnounces();
 });
 
 $router->register('GET', '/api/get/announce', function () {
-    if (isset($_GET['id'])) {
         $controller = new \Hetic\ReshomeApi\Controller\AnnounceController();
-        $controller->getDetail($_GET['id']);
-    }
+        $controller->getDetail();
 });
 
 $router->register('GET', '/api/get/announce/reviews', function () {
@@ -33,13 +29,8 @@ $router->register('GET', '/api/get/announce/reviews', function () {
 });
 
 $router->register('POST', '/api/auth/login', function () {
-    $username = $_POST['email'];
-    $password = $_POST['password'];
-
-    if (isset($_POST['email']) && isset($_POST['password'])) {
-        $controller = new \Hetic\ReshomeApi\Controller\AuthController();
-        $controller->login($username, $password);
-    }
+    $controller = new \Hetic\ReshomeApi\Controller\AuthController();
+    $controller->login();
 });
 
 $router->register('POST', '/api/auth/register', function () {
@@ -70,7 +61,7 @@ $router->register('GET', '/api/get/pictures', function () {
 
 $router->register('GET', '/api/get/search', function () {
     $controller = new \Hetic\ReshomeApi\Controller\AnnounceController();
-    $controller->getSearch($_GET['q']);
+    $controller->getSearch();
 });
 
 $router->register('POST', '/api/post/reservation', function () {
