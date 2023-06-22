@@ -9,7 +9,7 @@ class UserManager extends BaseManager
 {
     public function create(array $userData) : mixed
     {
-        $query = 'INSERT INTO User (first_name, last_name, email, phone_number, hashed_password, address, post_code, city, country) VALUES (:first_name, :last_name, :email, :phone_number, :hashed_password, :address, :post_code, :city, :country)';
+        $query = 'INSERT INTO User (first_name, last_name, email, phone_number, hashed_password) VALUES (:first_name, :last_name, :email, :phone_number, :hashed_password)';
         $stmt = $this->db->prepare($query);
         $hashedPassword = password_hash($userData['password'], PASSWORD_BCRYPT);
         $stmt->execute([
@@ -17,11 +17,7 @@ class UserManager extends BaseManager
             'last_name' => $userData['last_name'],
             'email' => $userData['email'],
             'phone_number' => $userData['phone_number'],
-            'hashed_password' => $hashedPassword,
-            'address' => $userData['address'],
-            'post_code' => $userData['post_code'],
-            'city' => $userData['city'],
-            'country' => $userData['country'],
+            'hashed_password' => $hashedPassword
         ]);
 
         if ($stmt->rowCount() > 0) {
