@@ -103,6 +103,16 @@ $router->register('DELETE', '/api/delete/review', function () {
     $controller->deleteReview();
 });
 
+$router->register('GET', '/api/get/users', function () {
+    $controller = new \Hetic\ReshomeApi\Controller\UserController();
+    $controller->getAllUsers();
+});
+
+$router->register('DELETE', '/api/delete/user', function () {
+    $controller = new \Hetic\ReshomeApi\Controller\UserController();
+    $controller->deleteUser();
+});
+
 $method = $_SERVER['REQUEST_METHOD'];
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
