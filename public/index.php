@@ -2,6 +2,8 @@
 
     header("Access-Control-Allow-Origin: *");
     header("Access-Control-Allow-Credentials: true");
+    header("Access-Control-Allow-Headers: Authorization");
+    header('Access-Control-Allow-Methods: GET, POST, DELETE, OPTIONS');
     header('Content-Type: application/json');
 
 require_once __DIR__.'/../vendor/autoload.php';
@@ -10,21 +12,17 @@ $router = new \Hetic\ReshomeApi\Router\Router();
 
 
 $router->register('GET', '/api/test', function() {
-    return json_encode(["message" => "Hello, world!"]);
+    return json_encode(["message" => "Reshome API"]);
 });
 
 $router->register('GET', '/api/get/announces', function () {
     $controller = new \Hetic\ReshomeApi\Controller\AnnounceController();
-    isset($_GET['page']) ? $page = intval($_GET['page']) : $page = 1;
-    $controller->getAnnounces($page);
-
+    $controller->getAnnounces();
 });
 
 $router->register('GET', '/api/get/announce', function () {
-    if (isset($_GET['id'])) {
         $controller = new \Hetic\ReshomeApi\Controller\AnnounceController();
-        $controller->getDetail($_GET['id']);
-    }
+        $controller->getDetail();
 });
 
 $router->register('GET', '/api/get/announce/reviews', function () {
@@ -33,13 +31,8 @@ $router->register('GET', '/api/get/announce/reviews', function () {
 });
 
 $router->register('POST', '/api/auth/login', function () {
-    $username = $_POST['email'];
-    $password = $_POST['password'];
-
-    if (isset($_POST['email']) && isset($_POST['password'])) {
-        $controller = new \Hetic\ReshomeApi\Controller\AuthController();
-        $controller->login($username, $password);
-    }
+    $controller = new \Hetic\ReshomeApi\Controller\AuthController();
+    $controller->login();
 });
 
 $router->register('POST', '/api/auth/register', function () {
@@ -70,7 +63,7 @@ $router->register('GET', '/api/get/pictures', function () {
 
 $router->register('GET', '/api/get/search', function () {
     $controller = new \Hetic\ReshomeApi\Controller\AnnounceController();
-    $controller->getSearch($_GET['q']);
+    $controller->getSearch();
 });
 
 $router->register('POST', '/api/post/reservation', function () {
@@ -101,6 +94,16 @@ $router->register('POST', '/api/post/review', function () {
 $router->register('DELETE', '/api/delete/review', function () {
     $controller = new \Hetic\ReshomeApi\Controller\ReviewController();
     $controller->deleteReview();
+});
+
+$router->register('GET', '/api/get/users', function () {
+    $controller = new \Hetic\ReshomeApi\Controller\UserController();
+    $controller->getAllUsers();
+});
+
+$router->register('DELETE', '/api/delete/user', function () {
+    $controller = new \Hetic\ReshomeApi\Controller\UserController();
+    $controller->deleteUser();
 });
 
 $method = $_SERVER['REQUEST_METHOD'];

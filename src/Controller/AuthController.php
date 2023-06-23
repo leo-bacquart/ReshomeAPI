@@ -53,14 +53,16 @@ class AuthController extends BaseController
         }
     }
 
-    public function login($username, $password)
+    public function login(): void
     {
+        $username = $_POST['email'];
+        $password = $_POST['password'];
+
         $manager = new UserManager();
         $user = $manager->verifyCredentials($username, $password);
         if ($user) {
             $jwt = $this->generateJwt($user);
             http_response_code(200);
-            header('Content-Type: application/json');
             echo json_encode(['token' => $jwt]);
         } else {
             http_response_code(401);
@@ -71,7 +73,7 @@ class AuthController extends BaseController
 
     public function register() : void
     {
-        $fields = ['first_name', 'last_name', 'email', 'phone_number', 'password', 'address', 'post_code', 'city', 'country'];
+        $fields = ['first_name', 'last_name', 'email', 'phone_number', 'password'];
         $data = array_map('htmlspecialchars', $_POST);
         $data = array_intersect_key($data, array_flip($fields));
 
@@ -88,8 +90,7 @@ class AuthController extends BaseController
             if ($user) {
                 $jwt = $this->generateJwt($user);
                 http_response_code(200);
-                header('Content-Type: application/json');
-                echo json_encode(['token' => $jwt]);
+                echo $jwt;
             } else {
                 http_response_code(400);
                 header('Content-Type: application/json');
