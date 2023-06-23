@@ -16,6 +16,10 @@ class AnnounceController extends BaseController
     public function createAnnounce() : void
     {
         $auth = new AuthController();
+        if (!$auth->verifyJwt()) {
+            echo json_encode(['message' => 'You are not logged in']);
+            return;
+        }
         if ($auth->verifyJwt()->getIsAdmin() || $auth->verifyJwt()->getIsStaff())
         {
             $fields = ['title', 'description', 'neighborhood', 'arrondissement', 'bedroom_number', 'capacity', 'type', 'area', 'price'];
@@ -33,6 +37,9 @@ class AnnounceController extends BaseController
                     foreach ($pictures as $picture) {
                         $pictureManager->addPicture($announceId, $picture);
                     }
+                } else {
+                    echo json_encode(['message' => 'No images found']);
+                    return;
                 }
 
                 echo json_encode(['message' => 'Announce successfully created']);
@@ -42,11 +49,16 @@ class AnnounceController extends BaseController
         } else {
             echo json_encode(['message' => 'Error : User is not admin']);
         }
-
     }
 
-    public function getAnnounces($number) : void
+    public function getAnnounces() : void
     {
+        if (!isset($_GET['page'])) {
+            $number = 1;
+        } else {
+            $number = $_GET['page'];
+        }
+
         $manager = new Model\Manager\AnnounceManager();
         $announces = $manager->getAnnouncePage($number);
         $title = 'Home';
@@ -62,8 +74,14 @@ class AnnounceController extends BaseController
         }
     }
 
-    public function getDetail($id) : void
+    public function getDetail() : void
     {
+        $id = $_GET['id'];
+        if (!$id) {
+            echo json_encode(['message' => 'No id selected']);
+            return;
+        }
+
         $manager = new Model\Manager\AnnounceManager();
 
         $data = $manager->getAnnounceById(intval(htmlspecialchars($id)))->jsonSerialize();
@@ -72,8 +90,14 @@ class AnnounceController extends BaseController
         echo json_encode($data);
     }
 
-    public function getSearch($query)
+    public function getSearch() : void
     {
+        $query = $_GET['q'];
+        if (!$query) {
+            echo json_encode(['message' => 'No query sent']);
+            return;
+        }
+
         $manager = new Model\Manager\AnnounceManager();
         $announces = $manager->getAnnounceBySearch(htmlspecialchars($query));
         $data = [];
